@@ -156,25 +156,6 @@ public class WebshopAnalyzer {
         readPaymentsFromCSV();
     }
 
-/*    private void readCustomersFromCSV2() throws IOException {
-        try (BufferedReader reader = new BufferedReader(new FileReader(CUSTOMERS_FILE_PATH))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] fields = line.split(DELIMITER);
-                if (fields.length == 4) {
-                    String webshopId = fields[0];
-                    String customerId = fields[1];
-                    String name = fields[2];
-                    String address = fields[3];
-                    Customer customer = new Customer(webshopId, customerId, name, address);
-                    customers.put(customerId, customer);
-                    webshops.computeIfAbsent(webshopId, Webshop::new);
-                } else {
-                    LOGGER.log(Level.SEVERE, "Invalid customer data: " + line);
-                }
-            }
-        }
-    }*/
     private void readCustomersFromCSV() {
         try (BufferedReader reader = new BufferedReader(new FileReader(CUSTOMERS_FILE_PATH))) {
             String line;
@@ -200,42 +181,6 @@ public class WebshopAnalyzer {
             }
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Error reading data from CSV files", e);
-        }
-    }
-    private void readPaymentsFromCSV2() throws IOException {
-        try (BufferedReader reader = new BufferedReader(new FileReader(PAYMENTS_FILE_PATH))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] fields = line.split(DELIMITER);
-                if (fields.length == 7) {
-                    String webshopId = fields[0];
-                    String customerId = fields[1];
-                    String paymentMethod = fields[2];
-                    int amount = Integer.parseInt(fields[3]);
-                    String bankAccount = fields[4];
-                    String cardNumber = fields[5];
-                    String paymentDate = fields[6];
-                    Payment payment = new Payment(webshopId, customerId, paymentMethod, amount, bankAccount, cardNumber, paymentDate);
-                    Customer customer = customers.get(customerId);
-                    if (customer != null) {
-                        customer.addPayment(payment);
-                        Webshop webshop = webshops.get(webshopId);
-                        if (webshop != null) {
-                            if (paymentMethod.equals("card")) {
-                                webshop.addCardAmount(amount);
-                            } else if (paymentMethod.equals("transfer")) {
-                                webshop.addTransferAmount(amount);
-                            }
-                        } else {
-                            LOGGER.log(Level.SEVERE, "Webshop not found for payment: " + line);
-                        }
-                    } else {
-                        LOGGER.log(Level.SEVERE, "Customer not found for payment: " + line);
-                    }
-                } else {
-                    LOGGER.log(Level.WARNING, "Invalid payment data: " + line);
-                }
-            }
         }
     }
     private void readPaymentsFromCSV() {
